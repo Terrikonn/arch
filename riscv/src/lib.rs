@@ -1,24 +1,26 @@
+//! Low level access to RISC-V processors
+//!
+//! # Minimum Supported Rust Version (MSRV)
+//!
+//! This crate is guaranteed to compile on stable Rust 1.42 and up. It *might*
+//! compile with older versions but that may change in any new patch release.
+//!
+//! # Features
+//!
+//! This crate provides:
+//!
+//! - Access to core registers like `mstatus` or `mcause`.
+//! - Interrupt manipulation mechanisms.
+//! - Wrappers around assembly instructions like `WFI`.
+
 #![no_std]
 #![feature(asm)]
-pub mod registers;
 
-/// Memory management unit virtual addressing mode
-///
-/// In 64-bit mode, we're given three different modes for the MMU:
-///  * 0 - The MMU is off -- no protection and no translation PA = VA
-///  * 8 - This is Sv39 mode -- 39-bit virtual addresses
-///  * 9 - This is Sv48 mode -- 48-bit virtual addresses
-#[repr(usize)]
-pub enum SatpMode {
-    Off = 0,
-    Sv39 = 8,
-    Sv48 = 9,
-}
+// #[cfg(not(riscv))]
+// compile_error!("Target must be riscv");
 
-// #[cfg(test)]
-// mod tests {
-//     #[test]
-//     fn it_works() {
-//         assert_eq!(2 + 2, 4);
-//     }
-// }
+extern crate bit_field;
+
+pub mod asm;
+pub mod interrupts;
+pub mod register;
