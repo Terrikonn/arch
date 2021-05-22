@@ -34,6 +34,7 @@ read_csr_as!(Utvec, 0x005, __read_utvec);
 write_csr!(0x005, __write_utvec);
 
 /// Writes the CSR
+#[inline]
 pub unsafe fn write(addr: usize, mode: TrapMode) {
     _write(addr + mode as usize);
 }

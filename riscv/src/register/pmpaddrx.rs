@@ -1,5 +1,7 @@
 macro_rules! reg {
-    ($addr:expr, $csr:ident, $readf:ident, $writef:ident) => {
+    (
+        $addr:expr, $csr:ident, $readf:ident, $writef:ident
+    ) => {
         /// Physical memory protection address register
         pub mod $csr {
             read_csr_as_usize!($addr, $readf);

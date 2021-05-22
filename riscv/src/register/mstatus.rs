@@ -7,9 +7,8 @@
 // FIXME: `SXL` and `UXL` bits require a structure interpreting XLEN,
 // which would be the best way we implement this using Rust?
 
-use core::mem::size_of;
-
 use bit_field::BitField;
+use core::mem::size_of;
 
 /// mstatus register
 #[derive(Clone, Copy, Debug)]
@@ -59,36 +58,43 @@ pub enum SPP {
 
 impl Mstatus {
     /// User Interrupt Enable
+    #[inline]
     pub fn uie(&self) -> bool {
         self.bits.get_bit(0)
     }
 
     /// Supervisor Interrupt Enable
+    #[inline]
     pub fn sie(&self) -> bool {
         self.bits.get_bit(1)
     }
 
     /// Machine Interrupt Enable
+    #[inline]
     pub fn mie(&self) -> bool {
         self.bits.get_bit(3)
     }
 
     /// User Previous Interrupt Enable
+    #[inline]
     pub fn upie(&self) -> bool {
         self.bits.get_bit(4)
     }
 
     /// Supervisor Previous Interrupt Enable
+    #[inline]
     pub fn spie(&self) -> bool {
         self.bits.get_bit(5)
     }
 
     /// Machine Previous Interrupt Enable
+    #[inline]
     pub fn mpie(&self) -> bool {
         self.bits.get_bit(7)
     }
 
     /// Supervisor Previous Privilege Mode
+    #[inline]
     pub fn spp(&self) -> SPP {
         match self.bits.get_bit(8) {
             true => SPP::Supervisor,
@@ -97,6 +103,7 @@ impl Mstatus {
     }
 
     /// Machine Previous Privilege Mode
+    #[inline]
     pub fn mpp(&self) -> MPP {
         match self.bits.get_bits(11..13) {
             0b00 => MPP::User,
@@ -110,6 +117,7 @@ impl Mstatus {
     ///
     /// Encodes the status of the floating-point unit,
     /// including the CSR `fcsr` and floating-point data registers `f0–f31`.
+    #[inline]
     pub fn fs(&self) -> FS {
         match self.bits.get_bits(13..15) {
             0b00 => FS::Off,
@@ -123,6 +131,7 @@ impl Mstatus {
     /// Additional extension state
     ///
     /// Encodes the status of additional user-mode extensions and associated state.
+    #[inline]
     pub fn xs(&self) -> XS {
         match self.bits.get_bits(15..17) {
             0b00 => XS::AllOff,
@@ -134,11 +143,13 @@ impl Mstatus {
     }
 
     /// Permit Supervisor User Memory access
+    #[inline]
     pub fn sum(&self) -> bool {
         self.bits.get_bit(18)
     }
 
     /// Make eXecutable Readable
+    #[inline]
     pub fn mxr(&self) -> bool {
         self.bits.get_bit(19)
     }
@@ -149,6 +160,7 @@ impl Mstatus {
     /// instruction when in S-mode will raise an illegal instruction exception.
     ///
     /// TVM is hard-wired to 0 when S-mode is not supported.
+    #[inline]
     pub fn tvm(&self) -> bool {
         self.bits.get_bit(20)
     }
@@ -162,6 +174,7 @@ impl Mstatus {
     /// an illegal instruction trap; or could always cause trap then the time limit is zero.
     ///
     /// TW is hard-wired to 0 when S-mode is not supported.
+    #[inline]
     pub fn tw(&self) -> bool {
         self.bits.get_bit(21)
     }
@@ -172,15 +185,19 @@ impl Mstatus {
     /// instruction exception.
     ///
     /// If S-mode is not supported, TSR bit is hard-wired to 0.
+    #[inline]
     pub fn tsr(&self) -> bool {
         self.bits.get_bit(22)
     }
 
-    // FIXME: There are MBE and SBE bits in 1.12; once Privileged Specification version 1.12
-    // is ratified, there should be read functions of these bits as well.
+    /*
+        FIXME: There are MBE and SBE bits in 1.12; once Privileged Specification version 1.12
+        is ratified, there should be read functions of these bits as well.
+    */
 
     /// Whether either the FS field or XS field
     /// signals the presence of some dirty state
+    #[inline]
     pub fn sd(&self) -> bool {
         self.bits.get_bit(size_of::<usize>() * 8 - 1)
     }
@@ -226,6 +243,7 @@ set_clear_csr!(
     , set_tsr, clear_tsr, 1 << 22);
 
 /// Supervisor Previous Privilege Mode
+#[inline]
 pub unsafe fn set_spp(spp: SPP) {
     match spp {
         SPP::Supervisor => _set(1 << 8),
@@ -234,6 +252,7 @@ pub unsafe fn set_spp(spp: SPP) {
 }
 
 /// Machine Previous Privilege Mode
+#[inline]
 pub unsafe fn set_mpp(mpp: MPP) {
     let mut value = _read();
     value.set_bits(11..13, mpp as usize);
@@ -241,6 +260,7 @@ pub unsafe fn set_mpp(mpp: MPP) {
 }
 
 /// Floating-point extension state
+#[inline]
 pub unsafe fn set_fs(fs: FS) {
     let mut value = _read();
     value.set_bits(13..15, fs as usize);

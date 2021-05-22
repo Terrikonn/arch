@@ -14,12 +14,10 @@
 //! - Wrappers around assembly instructions like `WFI`.
 
 #![no_std]
-#![feature(asm)]
+#![feature(llvm_asm)]
 
-// #[cfg(not(riscv))]
-// compile_error!("Target must be riscv");
-
-extern crate bit_field;
+#[cfg(not(any(target_arch = "riscv32", target_arch = "riscv64")))]
+compile_error!("Target must be riscv");
 
 pub mod asm;
 pub mod interrupts;

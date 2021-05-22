@@ -33,26 +33,31 @@ pub enum Flag {
 
 impl Flags {
     /// Inexact
+    #[inline]
     pub fn nx(&self) -> bool {
         self.0.get_bit(0)
     }
 
     /// Underflow
+    #[inline]
     pub fn uf(&self) -> bool {
         self.0.get_bit(1)
     }
 
     /// Overflow
+    #[inline]
     pub fn of(&self) -> bool {
         self.0.get_bit(2)
     }
 
     /// Divide by Zero
+    #[inline]
     pub fn dz(&self) -> bool {
         self.0.get_bit(3)
     }
 
     /// Invalid Operation
+    #[inline]
     pub fn nv(&self) -> bool {
         self.0.get_bit(4)
     }
@@ -76,11 +81,13 @@ impl FCSR {
     }
 
     /// Accrued Exception Flags
+    #[inline]
     pub fn fflags(&self) -> Flags {
         Flags(self.bits.get_bits(0..5))
     }
 
     /// Rounding Mode
+    #[inline]
     pub fn frm(&self) -> RoundingMode {
         match self.bits.get_bits(5..8) {
             0b000 => RoundingMode::RoundToNearestEven,
@@ -98,6 +105,7 @@ write_csr!(0x003, __write_fcsr);
 clear!(0x003, __clear_fcsr);
 
 /// Reads the CSR
+#[inline]
 pub fn read() -> FCSR {
     FCSR {
         bits: unsafe { _read() as u32 },
@@ -105,6 +113,7 @@ pub fn read() -> FCSR {
 }
 
 /// Writes the CSR
+#[inline]
 pub unsafe fn set_rounding_mode(frm: RoundingMode) {
     let old = read();
     let bits = ((frm as u32) << 5) | old.fflags().0;
@@ -112,12 +121,14 @@ pub unsafe fn set_rounding_mode(frm: RoundingMode) {
 }
 
 /// Resets `fflags` field bits
+#[inline]
 pub unsafe fn clear_flags() {
     let mask = 0b11111;
     _clear(mask);
 }
 
 /// Resets `fflags` field bit
+#[inline]
 pub unsafe fn clear_flag(flag: Flag) {
     _clear(flag as usize);
 }

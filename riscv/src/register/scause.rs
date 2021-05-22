@@ -1,8 +1,7 @@
 //! scause register
 
-use core::mem::size_of;
-
 use bit_field::BitField;
+use core::mem::size_of;
 
 /// scause register
 #[derive(Clone, Copy)]
@@ -81,6 +80,7 @@ impl Exception {
 
 impl Scause {
     /// Returns the contents of the register as raw bits
+    #[inline]
     pub fn bits(&self) -> usize {
         self.bits
     }
@@ -92,6 +92,7 @@ impl Scause {
     }
 
     /// Trap Cause
+    #[inline]
     pub fn cause(&self) -> Trap {
         if self.is_interrupt() {
             Trap::Interrupt(Interrupt::from(self.code()))
@@ -101,11 +102,13 @@ impl Scause {
     }
 
     /// Is trap cause an interrupt.
+    #[inline]
     pub fn is_interrupt(&self) -> bool {
         self.bits.get_bit(size_of::<usize>() * 8 - 1)
     }
 
     /// Is trap cause an exception.
+    #[inline]
     pub fn is_exception(&self) -> bool {
         !self.is_interrupt()
     }
@@ -115,11 +118,13 @@ read_csr_as!(Scause, 0x142, __read_scause);
 write_csr!(0x142, __write_scause);
 
 /// Writes the CSR
+#[inline]
 pub unsafe fn write(bits: usize) {
     _write(bits)
 }
 
 /// Set supervisor cause register to corresponding cause.
+#[inline]
 pub unsafe fn set(cause: Trap) {
     let bits = match cause {
         Trap::Interrupt(i) => {
@@ -132,7 +137,7 @@ pub unsafe fn set(cause: Trap) {
                 Interrupt::SupervisorExternal => 9,
                 Interrupt::Unknown => panic!("unknown interrupt"),
             } | (1 << (size_of::<usize>() * 8 - 1)))
-        }, // interrupt bit is 1
+        } // interrupt bit is 1
         Trap::Exception(e) => match e {
             Exception::InstructionMisaligned => 0,
             Exception::InstructionFault => 1,

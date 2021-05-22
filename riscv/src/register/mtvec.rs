@@ -40,6 +40,7 @@ read_csr_as!(Mtvec, 0x305, __read_mtvec);
 write_csr!(0x305, __write_mtvec);
 
 /// Writes the CSR
+#[inline]
 pub unsafe fn write(addr: usize, mode: TrapMode) {
     let bits = addr + mode as usize;
     _write(bits);

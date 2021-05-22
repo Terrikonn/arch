@@ -10,21 +10,25 @@ pub struct Mcounteren {
 
 impl Mcounteren {
     /// Supervisor "cycle\[h\]" Enable
+    #[inline]
     pub fn cy(&self) -> bool {
         self.bits.get_bit(0)
     }
 
     /// Supervisor "time\[h\]" Enable
+    #[inline]
     pub fn tm(&self) -> bool {
         self.bits.get_bit(1)
     }
 
     /// Supervisor "instret\[h\]" Enable
+    #[inline]
     pub fn ir(&self) -> bool {
         self.bits.get_bit(2)
     }
 
     /// Supervisor "hpm\[x\]" Enable (bits 3-31)
+    #[inline]
     pub fn hpm(&self, index: usize) -> bool {
         assert!(3 <= index && index < 32);
         self.bits.get_bit(index)
@@ -48,11 +52,13 @@ set_clear_csr!(
 /// Supervisor instret Enable
     , set_ir, clear_ir, 1 << 2);
 
+#[inline]
 pub unsafe fn set_hpm(index: usize) {
     assert!(3 <= index && index < 32);
     _set(1 << index);
 }
 
+#[inline]
 pub unsafe fn clear_hpm(index: usize) {
     assert!(3 <= index && index < 32);
     _clear(1 << index);

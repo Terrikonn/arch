@@ -88,6 +88,7 @@ impl Exception {
 }
 impl Mcause {
     /// Returns the contents of the register as raw bits
+    #[inline]
     pub fn bits(&self) -> usize {
         self.bits
     }
@@ -105,6 +106,7 @@ impl Mcause {
     }
 
     /// Trap Cause
+    #[inline]
     pub fn cause(&self) -> Trap {
         if self.is_interrupt() {
             Trap::Interrupt(Interrupt::from(self.code()))
@@ -114,6 +116,7 @@ impl Mcause {
     }
 
     /// Is trap cause an interrupt.
+    #[inline]
     pub fn is_interrupt(&self) -> bool {
         match () {
             #[cfg(target_pointer_width = "32")]
@@ -126,6 +129,7 @@ impl Mcause {
     }
 
     /// Is trap cause an exception.
+    #[inline]
     pub fn is_exception(&self) -> bool {
         !self.is_interrupt()
     }

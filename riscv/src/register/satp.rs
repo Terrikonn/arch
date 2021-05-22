@@ -10,11 +10,13 @@ pub struct Satp {
 
 impl Satp {
     /// Returns the contents of the register as raw bits
+    #[inline]
     pub fn bits(&self) -> usize {
         self.bits
     }
 
     /// Current address-translation scheme
+    #[inline]
     #[cfg(target_pointer_width = "32")]
     pub fn mode(&self) -> Mode {
         match self.bits.get_bit(31) {
@@ -24,6 +26,7 @@ impl Satp {
     }
 
     /// Current address-translation scheme
+    #[inline]
     #[cfg(target_pointer_width = "64")]
     pub fn mode(&self) -> Mode {
         match self.bits.get_bits(60..64) {
@@ -37,24 +40,28 @@ impl Satp {
     }
 
     /// Address space identifier
+    #[inline]
     #[cfg(target_pointer_width = "32")]
     pub fn asid(&self) -> usize {
         self.bits.get_bits(22..31)
     }
 
     /// Address space identifier
+    #[inline]
     #[cfg(target_pointer_width = "64")]
     pub fn asid(&self) -> usize {
         self.bits.get_bits(44..60)
     }
 
     /// Physical page number
+    #[inline]
     #[cfg(target_pointer_width = "32")]
     pub fn ppn(&self) -> usize {
         self.bits.get_bits(0..22)
     }
 
     /// Physical page number
+    #[inline]
     #[cfg(target_pointer_width = "64")]
     pub fn ppn(&self) -> usize {
         self.bits.get_bits(0..44)
@@ -91,6 +98,7 @@ read_csr_as!(Satp, 0x180, __read_satp);
 write_csr_as_usize!(0x180, __write_satp);
 
 /// Sets the register to corresponding page table mode, physical page number and address space id.
+#[inline]
 #[cfg(target_pointer_width = "32")]
 pub unsafe fn set(mode: Mode, asid: usize, ppn: usize) {
     let mut bits = 0usize;
@@ -101,6 +109,7 @@ pub unsafe fn set(mode: Mode, asid: usize, ppn: usize) {
 }
 
 /// Sets the register to corresponding page table mode, physical page number and address space id.
+#[inline]
 #[cfg(target_pointer_width = "64")]
 pub unsafe fn set(mode: Mode, asid: usize, ppn: usize) {
     let mut bits = 0usize;

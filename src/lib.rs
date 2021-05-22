@@ -11,6 +11,9 @@
 #![cfg_attr(not(test), no_std)]
 #![allow(unreachable_patterns)]
 
+#[macro_use]
+extern crate cfg_if;
+
 /// Abstractions for common low-level tasks
 pub mod independent;
 /// Reexport arch crates

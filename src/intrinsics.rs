@@ -1,5 +1,5 @@
 //! Architecture intrinsics
-#[cfg(target_arch = "riscv")]
+#[cfg(riscv)]
 pub use riscv;
-#[cfg(target_arch = "x86_64")]
+#[cfg(x86_64)]
 pub use x86_64;

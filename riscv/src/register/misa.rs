@@ -51,11 +51,10 @@ impl Misa {
 read_csr!(0x301, __read_misa);
 
 /// Reads the CSR
+#[inline]
 pub fn read() -> Option<Misa> {
     let r = unsafe { _read() };
     // When misa is hardwired to zero it means that the misa csr
     // isn't implemented.
-    NonZeroUsize::new(r).map(|bits| Misa {
-        bits,
-    })
+    NonZeroUsize::new(r).map(|bits| Misa { bits })
 }

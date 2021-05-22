@@ -11,11 +11,13 @@ pub struct Ustatus {
 
 impl Ustatus {
     /// User Interrupt Enable
+    #[inline]
     pub fn uie(&self) -> bool {
         self.bits.get_bit(0)
     }
 
     /// User Previous Interrupt Enable
+    #[inline]
     pub fn upie(&self) -> bool {
         self.bits.get_bit(4)
     }

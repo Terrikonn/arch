@@ -1,10 +1,16 @@
 //! Interrupts
 
+// NOTE: Adapted from cortex-m/src/interrupt.rs
 use crate::register::mstatus;
 
 /// Disables all interrupts
+#[inline]
 pub unsafe fn disable() {
-    mstatus::clear_mie();
+    if cfg!(riscv) {
+        mstatus::clear_mie();
+    } else {
+        unimplemented!();
+    }
 }
 
 /// Enables all the interrupts
@@ -12,8 +18,13 @@ pub unsafe fn disable() {
 /// # Safety
 ///
 /// - Do not call this function inside an `interrupt::free` critical section
+#[inline]
 pub unsafe fn enable() {
-    mstatus::set_mie();
+    if cfg!(riscv) {
+        mstatus::set_mie();
+    } else {
+        unimplemented!();
+    }
 }
 
 /// Execute closure `f` in an interrupt-free context.
@@ -23,26 +34,24 @@ pub fn free<F, R>(f: F) -> R
 where
     F: FnOnce() -> R,
 {
-    // true if the interrupts enabled
-    let saved_mstatus = mstatus::read();
+    let mstatus = mstatus::read();
 
-    // disable interrupts if enabled
-    if saved_mstatus.mie() {
+    // disable interrupts
+    if mstatus.mie() {
         unsafe {
             disable();
         }
     }
 
-    let ret = f();
+    let r = f();
 
     // If the interrupts were active before our `disable` call, then re-enable
     // them. Otherwise, keep them disabled
-    if saved_mstatus.mie() {
+    if mstatus.mie() {
         unsafe {
             enable();
         }
     }
 
-    // return the result of `f` to the caller
-    ret
+    r
 }
