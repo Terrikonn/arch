@@ -12,9 +12,6 @@
 #![warn(missing_docs)]
 #![deny(missing_debug_implementations)]
 
-#[macro_use]
-extern crate lazy_static;
-
 pub use crate::addr::{
     align_down,
     align_up,
@@ -59,7 +56,6 @@ macro_rules! const_fn {
 
 pub mod addr;
 pub mod instructions;
-pub mod interrupts;
 pub mod registers;
 pub mod structures;
 
