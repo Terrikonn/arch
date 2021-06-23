@@ -1,5 +1,6 @@
 //! Special x86_64 instructions.
 
+pub mod cpuid;
 pub mod interrupts;
 pub mod port;
 pub mod random;
@@ -14,12 +15,13 @@ pub fn hlt() {
     }
 }
 
-/// Executes the `nop` instructions, which performs no operation (i.e. does nothing).
+/// Executes the `nop` instructions, which performs no operation (i.e. does
+/// nothing).
 ///
-/// This operation is useful to work around the LLVM bug that endless loops are illegally
-/// optimized away (see [the issue](https://github.com/rust-lang/rust/issues/28728)). By invoking this
-/// instruction (which is marked as volatile), the compiler should no longer optimize the
-/// endless loop away.
+/// This operation is useful to work around the LLVM bug that endless loops are
+/// illegally optimized away (see [the issue](https://github.com/rust-lang/rust/issues/28728)). By invoking this
+/// instruction (which is marked as volatile), the compiler should no longer
+/// optimize the endless loop away.
 pub fn nop() {
     unsafe {
         asm!("nop", options(nomem, nostack, preserves_flags));
@@ -34,8 +36,8 @@ pub fn bochs_breakpoint() {
     }
 }
 
-/// Gets the current instruction pointer. Note that this is only approximate as it requires a few
-/// instructions to execute.
+/// Gets the current instruction pointer. Note that this is only approximate as
+/// it requires a few instructions to execute.
 pub fn read_rip() -> crate::VirtAddr {
     let rip: u64;
     unsafe {
